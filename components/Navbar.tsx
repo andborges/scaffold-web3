@@ -1,8 +1,13 @@
+import { useContext } from 'react'
 import Link from 'next/link'
-import ThemeChanger from './DarkSwitch'
 import { Disclosure } from '@headlessui/react'
 
+import ThemeChanger from './DarkSwitch'
+import MetamaskLogo from './icons/metamaskLogo'
+import { BlockchainContext } from '../contexts/BlockchainContext'
+
 export default function Navbar() {
+  const { connectWallet, currentAccount } = useContext(BlockchainContext)
   const navigation = ['Product', 'Features', 'Pricing', 'Company', 'Blog']
 
   return (
@@ -85,9 +90,27 @@ export default function Navbar() {
         </div>
 
         <div className="hidden mr-3 space-x-4 lg:flex nav__item">
-          <Link href="/" className="px-6 py-2 text-white bg-indigo-600 rounded-md md:ml-5">
-            Get Started
-          </Link>
+          {!currentAccount && (
+            <button onClick={connectWallet} className="px-6 py-2 text-white bg-indigo-600 rounded-md md:ml-5">
+              <div className="flex items-center justify-end gap-1">
+                <MetamaskLogo width={30} />
+                <div>Conectar MetaMask</div>
+              </div>
+            </button>
+          )}
+
+          {currentAccount && (
+            <>
+              <div className="flex items-center justify-end gap-1">
+                <MetamaskLogo width={30} />
+                <div>
+                  {currentAccount.substring(0, 5)}
+                  ...
+                  {currentAccount.substring(38, 42)}
+                </div>
+              </div>
+            </>
+          )}
 
           <ThemeChanger />
         </div>
